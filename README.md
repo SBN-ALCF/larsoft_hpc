@@ -9,7 +9,7 @@ filesystems that prevent scaling to large node counts.
 - **Parallel Downloads**: A parallel version of [`pullProducts`](https://scisoft.fnal.gov/scisoft/bundles/tools/), configurable via `-j`.
 - **Layered SquashFS**: Separate base images containing common dependencies (ROOT, Geant4, etc.) from experiment-specific bundles.
 - **Automatic Validation**: Images carry metadata provenance; `create_env_file.sh` automatically detects and blocks version mismatches between layered images.
-- **Drift Detection**: Warns you if an update is too large relative to its base, suggesting a refresh of the foundation.
+- **Drift Detection**: Warns you if an update is too large relative to its base, suggesting a refresh of the base image.
 
 ## Prerequisites
 - **Python 3**: For manifest filtering.

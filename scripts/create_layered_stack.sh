@@ -241,7 +241,17 @@ if [ -s delta_MANIFEST.txt ]; then
         
         if [ "$PAUSE" -eq 1 ]; then
             log_warn "PAUSED: Delta manifest prepared at $(pwd)/${ACTUAL_TARGET_MANIFEST_NAME}"
+            cp "${ACTUAL_TARGET_MANIFEST_NAME}" "${ACTUAL_TARGET_MANIFEST_NAME}.orig"
             read -p "Edit the manifest if needed, then press Enter to continue..."
+
+            if cmp -s "${ACTUAL_TARGET_MANIFEST_NAME}" "${ACTUAL_TARGET_MANIFEST_NAME}.orig"; then
+                log_info "No changes made to manifest."
+            else
+                log_info "Manifest edited. Re-checking delta against base to ensure no redundant packages..."
+                "${FILTER_SCRIPT}" "${BASE_MANIFEST}" "${ACTUAL_TARGET_MANIFEST_NAME}" delta_MANIFEST_v2.txt
+                mv delta_MANIFEST_v2.txt "${ACTUAL_TARGET_MANIFEST_NAME}"
+            fi
+            rm -f "${ACTUAL_TARGET_MANIFEST_NAME}.orig"
         fi
 
         "${PULL_PRODUCTS}" -j "${JOBS}" -l -r "${SQUASH_ROOT}${MOUNT_POINT}" "${OS}" "${TARGET_BUNDLE}" "${TARGET_QUAL}" "${BUILD}"
