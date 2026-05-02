@@ -30,6 +30,21 @@ log_warn()  { echo -e "${YELLOW}[WARN]${NORMAL} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NORMAL} $1"; }
 log_dry()   { echo -e "${BOLD}[DRY-RUN]${NORMAL} $1"; }
 
+check_image_exists() {
+    local image_path=$1
+    if [ -f "$image_path" ]; then
+        log_warn "Image file already exists: $image_path"
+        read -p "Do you want to delete it and recreate it? [y/N] " response
+        if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+            log_info "Deleting existing image..."
+            rm -f "$image_path"
+        else
+            log_error "Image creation aborted to prevent corruption. Delete the file manually or allow deletion."
+            exit 1
+        fi
+    fi
+}
+
 usage() {
     cat <<EOF
 Usage: $0 [options] <os> <base-bundle> <base-qual> <target-bundle> <target-qual> <build> <mount-point>
@@ -183,8 +198,9 @@ else
         echo "TYPE=BASE" >> "${METADATA_DIR}/${BASE_BUNDLE}.info"
 
         if command -v mksquashfs &> /dev/null; then
+            check_image_exists "${BASE_IMAGE}"
             log_info "Creating base squashfs mirroring ${MOUNT_POINT}..."
-            mksquashfs "${SQUASH_ROOT}" "${BASE_IMAGE}" -comp gzip -no-progress
+            mksquashfs "${SQUASH_ROOT}" "${BASE_IMAGE}" -comp gzip -no-progress -noappend
         else
             log_warn "mksquashfs not found. Cannot create base image."
         fi
@@ -273,8 +289,9 @@ if [ -s delta_MANIFEST.txt ]; then
         echo "REQUIRES_QUAL=${BASE_QUAL}" >> "${METADATA_DIR}/${TARGET_BUNDLE}.depends_on"
 
         if command -v mksquashfs &> /dev/null; then
+            check_image_exists "${DELTA_IMAGE}"
             log_info "Creating delta squashfs mirroring ${MOUNT_POINT}..."
-            mksquashfs "${SQUASH_ROOT}" "${DELTA_IMAGE}" -comp gzip -no-progress
+            mksquashfs "${SQUASH_ROOT}" "${DELTA_IMAGE}" -comp gzip -no-progress -noappend
             log_info "${BOLD}Delta image created:${NORMAL} ${DELTA_IMAGE}"
         else
             log_warn "mksquashfs not found. Delta products are in ${SQUASH_ROOT}${MOUNT_POINT}"

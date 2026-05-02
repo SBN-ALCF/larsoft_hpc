@@ -115,5 +115,7 @@ source envs/sbndcode-v10_14_02_04.env
 ```
 
 ## Troubleshooting
+- **icaruscode**: Manifest file does not include some packages needed from sbncode. Use `--pause` mode and append the sbn manifest file of the same version/quals during the script.
+- **larcv2 & sbndata**: These packages are not on SciSoft. Use `--pause` mode and copy them from elsewhere to the working directory before image creation starts.
 - **Base Manifest Not Found**: Ensure you haven't deleted the `manifest_cache/` directory if you intend to reuse a base image.
 - **Qualifier Mismatch**: Ensure the qualifiers match exactly what is available on [scisoft](https://scisoft.fnal.gov).
