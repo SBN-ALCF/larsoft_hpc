@@ -1,0 +1,13 @@
+# Temporary work directories
+work_*/
+
+# SquashFS images and placeholders
+images/*.squashfs
+images/*.dry
+
+# Manifest cache
+manifest_cache/
+
+# Generated environment files
+envs/*.env
+envs/*.env.tmp
