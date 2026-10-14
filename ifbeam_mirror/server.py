@@ -76,15 +76,12 @@ class IFBeamHandler(BaseHTTPRequestHandler):
             
             # Write to CSV string
             output = io.StringIO()
-            writer = csv.writer(output)
-            writer.writerow(['timestamp', 'name', 'units', 'value(s)'])
-            for row in rows:
-                # Format to exactly match the API's CSV output
-                writer.writerow(row)
+            output.write("timestamp,name,units,value(s)\n")
+            for timestamp, name, units, value in rows:
+                # Format to exactly match the API's CSV output (no quoting for multi-values)
+                output.write(f"{timestamp},{name},{units},{value}\n")
                 
-            # Use carriage returns as well to match curl output exactly if needed, 
-            # though python's csv module uses CRLF by default on windows, we can leave as is.
-            csv_data = output.getvalue().replace('\r\n', '\n').encode('utf-8')
+            csv_data = output.getvalue().encode('utf-8')
             
             self.send_response(200)
             self.send_header('Content-Type', 'text/plain; charset=UTF-8')

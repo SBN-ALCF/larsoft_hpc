@@ -198,13 +198,6 @@ def main():
     print(f"  Mock Server:      {MOCK_BASE_URL}")
     print(f"  Real Server:      {REAL_BASE_URL}")
     print("=" * 70)
-
-    '''
-    # disable proxies
-    proxy_handler = urllib.request.ProxyHandler({})
-    opener = urllib.request.build_opener(proxy_handler)
-    urllib.request.install_opener(opener)
-    '''
     
     samples = get_db_samples(args.db, args.samples)
     if not samples:

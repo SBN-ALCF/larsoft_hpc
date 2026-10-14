@@ -100,8 +100,11 @@ def fetch_and_save(url, delay=0.0):
     with db_lock:
         cursor = conn.cursor()
         for row in reader:
-            if len(row) == 4:
-                ts_str, name, units, val = row
+            if len(row) >= 4:
+                ts_str = row[0]
+                name = row[1]
+                units = row[2]
+                val = ",".join(row[3:])
                 try:
                     ts = int(ts_str)
                 except ValueError:
@@ -137,6 +140,7 @@ def main():
     parser.add_argument("--workers", type=int, default=1, help="Number of concurrent workers")
     parser.add_argument("--delay", type=float, default=0.0, help="Delay in seconds between requests per worker")
     parser.add_argument("--chunk-size", type=float, default=3600.0, help="Chunk size in seconds to segment large time window requests (default: 3600.0 / 1 hour). Set to 0 to disable chunking.")
+    parser.add_argument("--force", action="store_true", help="Force scraping even if chunks are already present in the database")
     
     args = parser.parse_args()
     DB_FILE = args.db
@@ -194,7 +198,7 @@ def main():
                 current_t1 = min(current_t0 + chunk_size, t1)
                 
                 # Check if this chunk is already in our database
-                if is_chunk_already_scraped(db_cursor, b, current_t0, current_t1):
+                if not args.force and is_chunk_already_scraped(db_cursor, b, current_t0, current_t1):
                     skipped_chunks += 1
                 else:
                     qs = urllib.parse.urlencode({
