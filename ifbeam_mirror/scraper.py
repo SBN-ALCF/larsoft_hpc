@@ -166,6 +166,9 @@ def main():
             
         DEFAULT_BUNDLES = [
             "BoosterNeutrinoBeam_read",
+            # ICARUSBNBRetriever (icarusbnbspillinfo.fcl) reads its main devices,
+            # including E:TOR860 for spill timing, from this bundle
+            "BoosterNeutrinoBeam_read_expanded",
             "BNB_monitor",
             "BNB_BPM_settings",
             "BNBMultiWire"

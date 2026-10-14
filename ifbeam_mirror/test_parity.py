@@ -39,6 +39,7 @@ def get_db_samples(db_path, num_samples_per_bundle=2):
             # Using predefined bundles avoids a slow O(N) DISTINCT scan on 450GB databases.
             bundles = [
                 "BoosterNeutrinoBeam_read",
+                "BoosterNeutrinoBeam_read_expanded",
                 "BNB_monitor",
                 "BNB_BPM_settings",
                 "BNBMultiWire"

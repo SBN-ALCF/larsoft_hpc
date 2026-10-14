@@ -24,7 +24,7 @@ python3 scraper.py [options]
 - `--db <path>`: Path to target SQLite database file (default: `ifbeam.db`).
 - `--url <url>`: Scrape a single URL.
 - `--file <path>`: Scrape a file containing a list of URLs (one per line).
-- `--bundle <name>`: Optional bundle name. If omitted when specifying `--t0` and `--t1`, the scraper automatically scrapes all four standard bundles.
+- `--bundle <name>`: Optional bundle name. If omitted when specifying `--t0` and `--t1`, the scraper automatically scrapes all five standard bundles (`BoosterNeutrinoBeam_read`, `BoosterNeutrinoBeam_read_expanded`, `BNB_monitor`, `BNB_BPM_settings`, `BNBMultiWire`). The ICARUS BNB spill retriever needs `BoosterNeutrinoBeam_read_expanded`; without it the retriever finds no spills and writes empty BNB spill info.
 - `--t0 <seconds>`, `--t1 <seconds>`: Explicit time range in float seconds since epoch.
 - `--workers <integer>`: Number of concurrent workers for parallel scraping (default: `1`).
 - `--delay <seconds>`: Rate-limiting delay in seconds between sequential requests per worker (default: `0.0`).
@@ -50,10 +50,10 @@ python3 scraper.py [options]
    python3 scraper.py --bundle BNB_monitor --t0 1744785000.000 --t1 1744871400.000 --workers 6 --chunk-size 3600
    ```
 
-4. **Scraping All Four Standard Bundles Simultaneously**:
-   Scrape a time range for all four standard bundles in parallel:
+4. **Scraping All Five Standard Bundles Simultaneously**:
+   Scrape a time range for all five standard bundles in parallel:
    ```bash
-   python3 scraper.py --t0 1744785000.000 --t1 1744786800.000 --workers 4
+   python3 scraper.py --t0 1744785000.000 --t1 1744786800.000 --workers 5
    ```
 
 ---
